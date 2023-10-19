@@ -3,7 +3,6 @@ import misc_handler
 import lookups
 import error_handler
 
-
 # create a config file
 def create_connection(config_file):
     db_session = None
