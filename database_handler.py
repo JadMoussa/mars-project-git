@@ -2,7 +2,7 @@ import psycopg2
 import misc_handler
 import lookups
 import error_handler
-
+# foufou
 # create a config file
 def create_connection(config_file):
     db_session = None
