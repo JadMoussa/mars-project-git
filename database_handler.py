@@ -9,7 +9,7 @@ def create_connection(config_file):
     try:
         # db_host, db_name, db_user, db_pass = misc_handler.get_db_params_from_config_file(config_file)
 
-        db_host = 'server'
+        db_host = 'localhost'
         db_name = 'MarsProjet'
         db_user = 'postgres'
         db_pass = 'sql22'
@@ -27,3 +27,14 @@ def create_connection(config_file):
         error_handler.print_error(suffix, prefix)
     finally:
         return db_session
+
+
+def execute_query(db_session, db_query):
+    # Create a cursor
+    cursor = db_session.cursor()
+    # Execute a SELECT query
+    cursor.execute(db_query)
+    # Close the cursor and connection
+    cursor.close()
+    db_session.close()
+
