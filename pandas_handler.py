@@ -17,20 +17,6 @@ def return_filtered_dataframe(dataframe, filter_field, filter_value):
 
 
 def generate_create_table_statement(dataframe, table_name, primary_key=None):
-    """
-    Generate an SQL CREATE TABLE statement from a Pandas DataFrame.
-
-    Args:
-        dataframe (pandas.DataFrame): Input DataFrame.
-        table_name (str): Name of the database table to be created.
-        primary_key (str, optional): Name of the column to be set as the primary key.
-
-    Returns:
-        str: SQL CREATE TABLE statement.
-
-    Raises:
-        ValueError: If the DataFrame is empty, if the table name is not provided, or if the primary key is not a valid column.
-    """
     if dataframe.empty:
         raise ValueError("DataFrame is empty.")
 
@@ -74,19 +60,6 @@ print(create_table_statement)
 
 
 def generate_insert_statement(dataframe, table_name):
-    """
-    Generate an SQL INSERT statement from a Pandas DataFrame.
-
-    Args:
-        dataframe (pandas.DataFrame): Input DataFrame.
-        table_name (str): Name of the database table to insert data into.
-
-    Returns:
-        str: SQL INSERT statement.
-
-    Raises:
-        ValueError: If the DataFrame is empty or if the table name is not provided.
-    """
     if dataframe.empty:
         raise ValueError("DataFrame is empty.")
 

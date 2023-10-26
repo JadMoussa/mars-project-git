@@ -1,20 +1,6 @@
 import pandas as pd
 dataframe = pd.read_csv('your_data.csv')
 def transform_data(dataframe, transformation_type, **kwargs):
-    """
-    Transform data within a Pandas DataFrame.
-
-    Args:
-        dataframe (pandas.DataFrame): Input DataFrame.
-        transformation_type (str): Type of transformation ('filter', 'sort', 'groupby', etc.).
-        **kwargs: Additional keyword arguments specific to the transformation function.
-
-    Returns:
-        pandas.DataFrame: Transformed DataFrame.
-
-    Raises:
-        ValueError: If an unsupported transformation type is provided.
-    """
     if transformation_type == 'filter':
         return dataframe.query(**kwargs)
     elif transformation_type == 'sort':
