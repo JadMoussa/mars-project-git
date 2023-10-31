@@ -57,14 +57,28 @@ def generate_insert_statement(dataframe, table_name):
 
     if not table_name:
         raise ValueError("Table name is required.")
-
-    # Generate the list of column names
+    
     columns = ', '.join(dataframe.columns)
-
-    # Generate placeholders for values based on the number of columns
+    
     placeholders = ', '.join(['%s'] * len(dataframe.columns))
-
-    # Create the SQL INSERT statement
+  
     insert_statement = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
 
     return insert_statement
+
+#     if dataframe.empty:
+#         raise ValueError("DataFrame is empty.")
+
+#     if not table_name:
+#         raise ValueError("Table name is required.")
+
+#     # Generate the list of column names
+#     columns = ', '.join(dataframe.columns)
+
+#     # Generate placeholders for values based on the number of columns
+#     placeholders = ', '.join(['%s'] * len(dataframe.columns))
+
+#     # Create the SQL INSERT statement
+#     insert_statement = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
+
+#     return insert_statement
