@@ -82,3 +82,51 @@ def generate_insert_statement(dataframe, table_name):
 #     insert_statement = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
 
 #     return insert_statement
+
+def update_and_insert(dataframe, table_name, connection):
+    try:
+        cursor = connection.cursor()
+
+        cursor.execute(f"CREATE TABLE IF NOT EXISTS {table_name} (id SERIAL PRIMARY KEY, name VARCHAR);")
+        connection.commit()
+
+        for index, row in dataframe.iterrows():
+            cursor.execute(f"SELECT id FROM {table_name} WHERE id = %s;", (row['id'],))
+            existing_record = cursor.fetchone()
+
+            if existing_record:
+                cursor.execute(f"UPDATE {table_name} SET name = %s WHERE id = %s;", (row['name'], row['id']))
+            else:
+                cursor.execute(f"INSERT INTO {table_name} (name) VALUES (%s);", (row['name'],))
+
+        connection.commit()
+
+        print(f"Data updated and inserted into {table_name} successfully.")
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+
+    finally:
+        cursor.close()
+
+def create_etl_watermark(connection, staging_table, etl_timestamp):
+   
+    try:
+        cursor = connection.cursor()
+        cursor.execute("CREATE TABLE IF NOT EXISTS etl_watermark (staging_table TEXT PRIMARY KEY, last_etl_timestamp TIMESTAMP);")
+
+        cursor.execute("SELECT * FROM etl_watermark WHERE staging_table = %s;", (staging_table,))
+        existing_watermark = cursor.fetchone()
+
+        if existing_watermark:
+            cursor.execute("UPDATE etl_watermark SET last_etl_timestamp = %s WHERE staging_table = %s;", (etl_timestamp, staging_table))
+        else:
+            cursor.execute("INSERT INTO etl_watermark (staging_table, last_etl_timestamp) VALUES (%s, %s);", (staging_table, etl_timestamp))
+
+        connection.commit()
+
+        print(f"ETL watermark for {staging_table} updated successfully.")
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+
+    finally:
+        cursor.close()
