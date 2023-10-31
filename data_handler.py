@@ -1,4 +1,5 @@
 import pandas as pd
+import psycopg2 as ps
 
 def returns_query_as_dataframe(db_session, sql_query):
     return_dataframe =  pd.read_sql_query(sql_query, db_session)
@@ -130,3 +131,37 @@ def create_etl_watermark(connection, staging_table, etl_timestamp):
 
     finally:
         cursor.close()
+
+def create_dimension(connection, dimension_name, columns):
+   
+    try:
+        cursor = connection.cursor()
+
+        create_table_query = f"CREATE TABLE IF NOT EXISTS {dimension_name} ({', '.join([f'{col} {data_type}' for col, data_type in columns.items()])});"
+        cursor.execute(create_table_query)
+
+        connection.commit()
+
+        print(f"Dimension table {dimension_name} created successfully.")
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+
+    finally:
+        cursor.close()
+
+def create_fact(connection, fact_name, columns):
+    try:
+        cursor = connection.cursor()
+
+        create_table_query = f"CREATE TABLE IF NOT EXISTS {fact_name} ({', '.join([f'{col} {data_type}' for col, data_type in columns.items()])});"
+        cursor.execute(create_table_query)
+
+        connection.commit()
+
+        print(f"Fact table {fact_name} created successfully.")
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+
+    finally:
+        cursor.close()
+
