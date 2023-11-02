@@ -22,13 +22,11 @@ def return_list_of_all_csvs():
 
 def create_staging_tables(db_session, csv_list):
     for csv_item in csv_list:
-        pass
-        # csv_item = 'C:/Users/zahi.csv'
-        # table_name = csv_item.split('/')[len(csv_item.split('/')) -1 ].replace('.csv','').tolower()
-        # expected output = zahi
-        # csv_df = data_handler.read_data_as_dataframe()
-        # create_statemnt = data_handler.generate_create_table_statement(csv_df, table_name)
-        # database_handler.execute_query(db_session, createstatement)
+        csv_item = "C:\Users\User\Downloads\Fifa_world_cup_matches.csv"
+        table_name = csv_item.split('/')[len(csv_item.split('/')) -1 ].replace('.csv','').tolower()
+        csv_df = data_handler.read_data_as_dataframe()
+        create_statemnt = data_handler.generate_create_table_statement(csv_df, table_name)
+        database_handler.execute_query(db_session, create_statemnt)
 
 
 def execute():
