@@ -3,40 +3,18 @@ import lookups
 import error_handler
 import json
 import requests
+import psycopg2
 from datetime import datetime
-def create_staging_table(db_name, user, password, host, port, table_name, column_names):
-    try:
-        # Connect to PostgreSQL
-        conn = psycopg2.connect(
-            dbname=db_name,
-            user=user,
-            password=password,
-            host=host,
-            port=port
-        )
-        
-        cur = conn.cursor()
-        
-        # Construct the CREATE TABLE query
-        columns_str = ', '.join(column_names)
-        create_query = f'''
-            CREATE TABLE {table_name} (
-                {columns_str}
-            );
-        '''
-        
-        # Execute the query
-        cur.execute(create_query)
-        
-        # Commit the changes and close the connection
-        conn.commit()
-        cur.close()
-        conn.close()
-        
-        print(f"Staging table '{table_name}' created successfully.")
-        
-    except psycopg2.Error as e:
-        print(f"Error creating staging table '{table_name}': {e}")
+import database_handler
+
+def execute_sql_commands(db_session, etl_step):
+    # read all files ending with ".sql"
+    sql_files = []
+    for sql_file in sql_files:
+        if sql_file.split('_')[1] == etl_step.value:
+            # read the content of the file
+            sql_file_content = None
+            database_handler.execute_query(db_session, sql_file_content)
 
 
 def returns_query_as_dataframe(db_session, sql_query):
@@ -53,15 +31,14 @@ def read_data_as_dataframe(source_type, source_path_or_query):
     else:
         raise ValueError("Unsupported source type: " + source_type)
     
-    
-def generate_create_table_statement(dataframe, table_name, primary_key=None):
-    if dataframe.empty:
-        raise ValueError("DataFrame is empty.")
-
-    if not table_name:
-        raise ValueError("Table name is required.")
-
-    # Create an empty list to store column definitions
+    #fouad create statement
+def return_create_statement_from_df(dataframe, schema_name, table_name):
+    type_mapping = {
+        'int64':'INT',
+        'float64':'FLOAT',
+        'object':'TEXT',
+        'datetime64[ns]':'TIMESTAMP'
+    }
     column_definitions = []
 
     # Iterate through columns in the DataFrame and define column names and data types
@@ -77,6 +54,7 @@ def generate_create_table_statement(dataframe, table_name, primary_key=None):
 
         column_definition = f"{column_name} {data_type}"
         column_definitions.append(column_definition)
+
 
     # If a primary key is specified, include it in the column definitions
     if primary_key and primary_key in dataframe.columns:
@@ -233,6 +211,27 @@ def return_insert_statement(dataframe, table_name, schema):
     return insert_statements
 
 
+def populate_dfs():
+    df_list = list()
+    dict_item = {}
+    dict_item['table_name'] = 'stg_alfsite_player'
+    dict_item['file_id'] = lookups.DataSourceFileIDs.Players.value
+    df_list.append(dict_item)
+    dict_item = {}
+    dict_item['table_name'] = 'stg_alfsite_winner'
+    dict_item['file_id'] = lookups.DataSourceFileIDs.Winners.value
+    df_list.append(dict_item)
+    dict_item = {}
+    dict_item['table_name'] = 'stg_alfsite_group'
+    dict_item['file_id'] = lookups.DataSourceFileIDs.Groups.value
+    df_list.append(dict_item)
+    dict_item = {}
+    dict_item['table_name'] = 'stg_alfsite_team'
+    dict_item['file_id'] = lookups.DataSourceFileIDs.Teams.value
+    df_list.append(dict_item)
+    return df_list
+
+
 def return_insert_statement_for_watermark(timestamp_str, table_name, schema):
      
     timestamp = datetime.strptime(timestamp_str, '%d/%m/%Y %H:%M')
@@ -241,14 +240,6 @@ def return_insert_statement_for_watermark(timestamp_str, table_name, schema):
     return insert_statement
 
 
-
-
-def create_staging_table(df, schema_name, table_name):
-    
- data_type = {
-    
- }
-
- df = pd.DataFrame(data_type)
- create_statement = return_create_statement_from_df(df, schema_name, table_name)
- return create_statement
+def return_df_from_drive(file_id_value):
+    url = f'https://drive.google.com/uc?id={file_id_value}'
+    return pd.read_csv(url,encoding='latin-1')

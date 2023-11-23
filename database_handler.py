@@ -38,3 +38,6 @@ def execute_query(db_session, db_query):
     cursor.close()
     db_session.close()
 
+
+def close_connection(db_session):
+    db_session.close()
