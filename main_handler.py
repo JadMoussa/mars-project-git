@@ -2,7 +2,7 @@
 # import hook
 # import posthook
 
-
+import database_handler
 # i create my etl
 # Import necessary libraries/modules
 import sys
@@ -47,8 +47,11 @@ def main():
     # Execute the post-ETL hook (if available)
     post_etl_hook()
 
+    
+
 if __name__ == "__main__":
     # Call the main function when the script is run directly (not imported as a module)
     main()
 
 #check the tester
+

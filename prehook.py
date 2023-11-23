@@ -1,6 +1,6 @@
 import database_handler
 import data_handler
-
+import glob
 # execute sql commands that are for the prehook.
 def execute_sql_commands(db_session):
     # read all files ending with ".sql"
@@ -22,12 +22,10 @@ def return_list_of_all_csvs():
 
 def create_staging_tables(db_session, csv_list):
     for csv_item in csv_list:
-        csv_item = "C:\Users\User\Downloads\Fifa_world_cup_matches.csv"
-        table_name = csv_item.split('/')[len(csv_item.split('/')) -1 ].replace('.csv','').tolower()
-        csv_df = data_handler.read_data_as_dataframe()
-        create_statemnt = data_handler.generate_create_table_statement(csv_df, table_name)
-        database_handler.execute_query(db_session, create_statemnt)
-
+        table_name = csv_item.split('\\')[-1].replace('.csv', '').lower()
+        csv_df = data_handler.read_data_as_dataframe(csv_item)
+        create_statement = data_handler.generate_create_table_statement(csv_df, table_name)
+        database_handler.execute_query(db_session, create_statement)
 
 def execute():
     db_session = database_handler.create_connection()
@@ -35,3 +33,19 @@ def execute():
     return_list_of_all_csvs()
     create_staging_tables()
     # close connection
+
+def execute(db_session):
+    sql_files = glob.glob("**/*.sql")
+
+    for sql_file in sql_files:
+         
+        file_name = sql_file.split("\\")[-1]
+         
+        if "_hook" in file_name:
+            query = None
+            print(file_name)   
+            
+            with open(sql_file, "r") as f:
+                query = f.read()
+            database_handler.execute_query(db_session, query)
+            db_session.commit()
