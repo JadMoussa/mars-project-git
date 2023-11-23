@@ -1,6 +1,14 @@
+from asyncio import DatagramProtocol
+import dataclasses
 import pandas as pd
 import psycopg2 as ps
-import lookups
+from lookups import FileType,ErrorHandling,HandledType
+from db_handler import create_connection,close_connection,execute_query
+import os
+from datetime import time
+import psycopg2
+import json
+from datetime import datetime
 
 def returns_query_as_dataframe(db_session, sql_query):
     return_dataframe =  pd.read_sql_query(sql_query, db_session)
@@ -73,10 +81,8 @@ def create_etl_watermark(connection, staging_table, etl_timestamp):
         else:
             cursor.execute("INSERT INTO etl_watermark (staging_table, last_etl_timestamp) VALUES (%s, %s);", (staging_table, etl_timestamp))
         connection.commit()
-        # remove print and add logger
         print(f"ETL watermark for {staging_table} updated successfully.")
     except Exception as e:
-        # remove print and add logger
         print(f"An error occurred: {str(e)}")
     finally:
         cursor.close()
@@ -102,16 +108,32 @@ def create_dimension(connection, table_name, table_type, columns):
         cursor.close()
 
 
-
-def generate_insert_statement(dataframe, table_name):
-    if dataframe.empty:
-        raise ValueError("DataFrame is empty.")
-    if not table_name:
-        raise ValueError("Table name is required.")
-    # Generate the list of column names
-    columns = ', '.join(dataframe.columns)
-    # Generate placeholders for values based on the number of columns
-    placeholders = ', '.join(['%s'] * len(dataframe.columns))
-    # Create the SQL INSERT statement
-    insert_statement = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
-    return insert_statement
+    if data is None:
+        print("Error: Data is None.")
+        return
+    
+    conn = create_connection()
+    
+    if conn is None:
+        return
+    
+    try:
+        with conn.cursor() as cursor:
+            for i in range(0, len(data), batch_size):
+                batch = data[i:i + batch_size]
+                insert_statements = insert_statements_dataframe(batch, schema_name, table_name)
+                
+                with conn:
+                    with conn.cursor() as cursor:
+                        for statement in insert_statements:
+                            execute_query(conn, statement)
+                    
+                    reco_etlwatermark(conn, schema_name, watermark_table_name,table_name)
+        
+        conn.commit()
+        print("Data inserted successfully in batches.")
+    except (Exception, psycopg2.Error) as error:
+        print(f"Error inserting data in batches: {error}")
+    finally:
+        if conn:
+            conn.close()
