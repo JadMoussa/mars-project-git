@@ -6,7 +6,7 @@ import error_handler
 import data_handler
 # foufou
 # create a config file
-def create_connection(db_session):
+def create_connection():
     db_session = None
     try:
         # db_host, db_name, db_user, db_pass = misc_handler.get_db_params_from_config_file(config_file)
