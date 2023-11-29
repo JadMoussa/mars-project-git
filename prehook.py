@@ -6,7 +6,11 @@ import lookups
 def create_staging_tables(db_session):
     return_val = None
     try:
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> e9c9778800b7735e73e52c070eb2ca71564d003f
         df_list = data_handler.populate_dfs()
         for df in df_list:
             table_name = df.get('table_name')
@@ -20,12 +24,20 @@ def create_staging_tables(db_session):
         return_val = False
     finally:
         return return_val
+<<<<<<< HEAD
  
  
 def execute(db_session):
  
+=======
+
+
+def execute(db_session):
+
+>>>>>>> e9c9778800b7735e73e52c070eb2ca71564d003f
     db_session = database_handler.create_connection()
     data_handler.execute_sql_commands(db_session, lookups.ETLStep.PREHOOK)
     create_staging_tables(db_session)
     database_handler.close_connection(db_session)
     # insert to staging tables.
+   

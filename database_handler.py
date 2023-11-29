@@ -1,9 +1,8 @@
+import configparser
 import psycopg2
 import misc_handler
 import lookups
 import error_handler
-import data_handler
-
 # foufou
 # create a config file
 def create_connection():
@@ -11,10 +10,11 @@ def create_connection():
     try:
         # db_host, db_name, db_user, db_pass = misc_handler.get_db_params_from_config_file(config_file)
         #  i want you to read the data from a config file
-        db_host = 'localhost'
+        db_host = 'localhost' 
         db_name = 'MarsProjet'
         db_user = 'postgres'
         db_pass = 'sql22'
+
         db_session = psycopg2.connect(
             host = db_host,
             database = db_name,
