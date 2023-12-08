@@ -2,11 +2,10 @@ import database_handler
 import data_handler
 import lookups
 # execute sql commands that are for the prehook.
-
+ 
 def create_staging_tables(db_session):
     return_val = None
     try:
-
         df_list = data_handler.populate_dfs()
         for df in df_list:
             table_name = df.get('table_name')
