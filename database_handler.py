@@ -41,4 +41,5 @@ def execute_query(db_session, db_query):
 
 
 def close_connection(db_session):
-    db_session.close()
+    if db_session.closed == 1:
+        db_session.close()
