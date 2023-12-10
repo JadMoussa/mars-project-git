@@ -36,7 +36,7 @@ def execute_query(db_session, db_query):
     cursor.execute(db_query)
     # Close the cursor and connection
     cursor.close()
-    db_session.close()
+    # db_session.close()
 
 
 def close_connection(db_session):
