@@ -4,10 +4,12 @@ CREATE TABLE IF NOT EXISTS dw_reporting.dim_team
     team_name VARCH 
 );
 
-INSERT INTO dw_reporting.dim_team (team_id, team_name)
+INSERT INTO dw_reporting.dim_team 
+(team_id, team_name)
 SELECT 
+    team_id ,
+    team_name 
+ FROM dw_reporting.
 
-
-ON CONFLICT(id)
-DO UPDATE
+ON CONFLICT UPDATE fields
     -- 
