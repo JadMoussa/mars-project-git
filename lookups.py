@@ -18,7 +18,7 @@ class ETLStep(Enum):
     POSTHOOK = 'posthook'
     
 class DataSourceFileIDs(Enum):
-    Players = '1WJdoQ8oQ7qETcbu-OOgkd6t7UAAN59sx'
-    Groups = '1WJdoQ8oQ7qETcbu-OOgkd6t7UAAN59sx'
-    Teams = '1XS9INg_SJ33Wp9MuTKi-PKCyKUJbgqH7'
-    Winners = '1On6XlGXAdGk3vJkbdlM8A8xvQbG7_pRh'
+    Players = '10Gr3uIseswYztzYoPYGuLv4Fz2QCroe_'
+    Groups = '-1Xj-21aJ-nLjSGI2h25vTE5g7uQ5sdeM3'
+    Teams = '1izgB8Wn62xzs0a-RcTs-Pu_iFOCgMhr1'
+    Winners = '10YN4jxi_nx1FHMlxlklGzXu_H5Zk5DTp'

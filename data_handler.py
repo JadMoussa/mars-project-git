@@ -14,7 +14,7 @@ def execute_sql_commands(db_session, etl_step):
         if sql_file.split('_')[1] == etl_step.value:
             # read the content of the file
             sql_file_content = None
-            database_handler.execute_query(db_session, sql_file_content)
+            database_handler.execute_query(db_session, sql_file_content)    
 
 
 def returns_query_as_dataframe(db_session, sql_query):

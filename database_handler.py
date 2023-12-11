@@ -30,12 +30,10 @@ def create_connection():
         return db_session
 
 def execute_query(db_session, db_query):
-    # Create a cursor
     cursor = db_session.cursor()
-    # Execute a SELECT query
     cursor.execute(db_query)
-    # Close the cursor and connection
-    cursor.close()
+    cursor.close()  
+    
 
 def close_connection(db_session):
     if db_session.closed == 1:
