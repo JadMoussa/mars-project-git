@@ -6,16 +6,19 @@ import requests
 import psycopg2
 from datetime import datetime
 import database_handler
+import os
 
 def execute_sql_commands(db_session, etl_step):
-    # read all files ending with ".sql"
-    sql_files = []
-    for sql_file in sql_files:
-        if sql_file.split('_')[1] == etl_step.value:
-            # read the content of the file
-            sql_file_content = None
-            database_handler.execute_query(db_session, sql_file_content)    
-
+        # Zahi
+        sql_command_directory_path = './SQL_Commands'
+        sql_files = [sqlfile for sqlfile in os.listdir(sql_command_directory_path) if sqlfile.endswith('.sql')]        
+        sorted_sql_files = sql_files 
+        for sql_file in sorted_sql_files:
+            if sql_file.split('__')[1].split('_')[0] == etl_step.value:
+                # Read the SQL query from the file
+                with open(os.path.join(sql_command_directory_path, sql_file), 'r') as file:
+                    sql_query = file.read()
+                    database_handler.execute_query(db_session, sql_query)
 
 def returns_query_as_dataframe(db_session, sql_query):
     return_dataframe =  pd.read_sql_query(sql_query, db_session)

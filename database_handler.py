@@ -14,7 +14,7 @@ def create_connection():
         db_host = 'localhost'
         db_name = 'MarsProjet'
         db_user = 'postgres'
-        db_pass = 'Fouadkb1'
+        db_pass = 'admin'
         db_session = psycopg2.connect(
             host = db_host,
             database = db_name,
